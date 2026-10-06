@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Miraz Airlines — Fly Beyond</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#home" onclick="showPage('home')">
+      <span class="brand-mark">M</span>
+      <span><b>MIRAZ</b><small>AIRLINES</small></span>
+    </a>
+    <nav id="nav">
+      <a href="#home" onclick="showPage('home')">Flights</a>
+      <a href="#manage" onclick="showPage('manage')">Manage Booking</a>
+      <a href="#checkin" onclick="showPage('checkin')">Check-in</a>
+      <a href="#status" onclick="showPage('status')">Flight Status</a>
+      <a href="#help" onclick="showPage('help')">Help</a>
+    </nav>
+    <button class="login-btn" onclick="openModal('loginModal')">Login / Register</button>
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  </header>
+
+  <main>
+    <section id="home" class="page active">
+      <div class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="eyebrow">✈ INDIA'S NEW WAY TO FLY</div>
+          <h1>Where would you<br><span>like to fly?</span></h1>
+          <p>Simple journeys. Smart fares. A better way to travel with Miraz Airlines.</p>
+        </div>
+        <div class="search-card">
+          <div class="trip-tabs">
+            <button class="trip active" onclick="setTrip(this)">Round Trip</button>
+            <button class="trip" onclick="setTrip(this)">One Way</button>
+            <button class="trip" onclick="setTrip(this)">Multi-City</button>
+          </div>
+          <div class="search-grid">
+            <label>FROM
+              <select id="from">
+                <option value="DEL">Delhi (DEL)</option><option value="BOM">Mumbai (BOM)</option>
+                <option value="BLR">Bengaluru (BLR)</option><option value="HYD">Hyderabad (HYD)</option>
+                <option value="MAA">Chennai (MAA)</option><option value="CCU">Kolkata (CCU)</option>
+                <option value="PAT">Patna (PAT)</option><option value="GOI">Goa (GOI)</option>
+              </select>
+            </label>
+            <button class="swap" onclick="swapAirports()" title="Swap airports">⇄</button>
+            <label>TO
+              <select id="to">
+                <option value="BOM">Mumbai (BOM)</option><option value="DEL">Delhi (DEL)</option>
+                <option value="BLR">Bengaluru (BLR)</option><option value="HYD">Hyderabad (HYD)</option>
+                <option value="MAA">Chennai (MAA)</option><option value="CCU">Kolkata (CCU)</option>
+                <option value="PAT">Patna (PAT)</option><option value="GOI">Goa (GOI)</option>
+              </select>
+            </label>
+            <label>DEPARTURE<input id="depart" type="date"></label>
+            <label class="return-field">RETURN<input id="return" type="date"></label>
+            <label>PASSENGERS<select id="passengers"><option>1 Adult</option><option>2 Adults</option><option>3 Adults</option><option>4 Adults</option></select></label>
+            <label>CLASS<select id="cabin"><option>Economy</option><option>Premium Economy</option><option>Business</option></select></label>
+            <button class="primary search-btn" onclick="searchFlights()">Search Flights →</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="section-heading"><div><span class="eyebrow blue">WHY MIRAZ</span><h2>Travel made beautifully simple.</h2></div><span class="muted">Your journey, our priority.</span></div>
+        <div class="feature-grid">
+          <article><div class="icon">₹</div><h3>Smart fares</h3><p>Transparent pricing with no confusing booking experience.</p></article>
+          <article><div class="icon">◉</div><h3>Easy check-in</h3><p>Check in online and keep your boarding pass ready before you reach the airport.</p></article>
+          <article><div class="icon">✦</div><h3>Reliable journeys</h3><p>Stay updated with live-style flight status and booking information.</p></article>
+        </div>
+      </section>
+
+      <section class="promo">
+        <div><span class="eyebrow">MIRAZ ESCAPES</span><h2>More destinations.<br>More reasons to fly.</h2><p>Discover India's favourite cities with Miraz Airlines.</p></div>
+        <button class="outline light" onclick="searchFlights()">Explore flights</button>
+      </section>
+    </section>
+
+    <section id="flights" class="page">
+      <div class="page-head"><div><span class="eyebrow blue">FLIGHT SEARCH</span><h1>Available flights</h1><p id="route-summary"></p></div><button class="outline" onclick="showPage('home')">← Modify search</button></div>
+      <div class="filterbar">
+        <button class="filter active" onclick="sortFlights('price',this)">Cheapest</button><button class="filter" onclick="sortFlights('duration',this)">Fastest</button><button class="filter" onclick="sortFlights('departure',this)">Earliest departure</button>
+        <span class="result-count" id="result-count"></span>
+      </div>
+      <div id="flight-list" class="flight-list"></div>
+    </section>
+
+    <section id="manage" class="page simple-page">
+      <div class="center-card">
+        <span class="eyebrow blue">MANAGE BOOKING</span><h1>Manage your journey</h1><p>Enter your PNR and contact detail to view your booking.</p>
+        <div class="form-row"><input id="managePnr" placeholder="PNR e.g. MZ7K9P"><input id="manageEmail" placeholder="Email or mobile number"></div>
+        <button class="primary" onclick="manageBooking()">Find booking →</button>
+        <div id="manage-result"></div>
+      </div>
+    </section>
+
+    <section id="checkin" class="page simple-page">
+      <div class="center-card">
+        <span class="eyebrow blue">ONLINE CHECK-IN</span><h1>Check in online</h1><p>Save time at the airport. Check in using your PNR and last name.</p>
+        <div class="form-row"><input id="checkPnr" placeholder="PNR"><input id="checkLast" placeholder="Last name"></div>
+        <button class="primary" onclick="checkIn()">Continue →</button>
+        <div id="check-result"></div>
+      </div>
+    </section>
+
+    <section id="status" class="page simple-page">
+      <div class="center-card wide">
+        <span class="eyebrow blue">FLIGHT STATUS</span><h1>Track your flight</h1><p>Search by flight number.</p>
+        <div class="form-row"><input id="statusFlight" placeholder="e.g. MZ 204"><input id="statusDate" type="date"></div>
+        <button class="primary" onclick="flightStatus()">Check status →</button>
+        <div id="status-result"></div>
+      </div>
+    </section>
+
+    <section id="booking" class="page">
+      <div class="page-head"><div><span class="eyebrow blue">YOUR JOURNEY</span><h1>Complete booking</h1><p id="booking-flight-summary"></p></div><div class="steps"><span class="done">1</span><i></i><span class="done">2</span><i></i><span class="current">3</span></div></div>
+      <div class="booking-layout">
+        <div class="booking-main">
+          <div class="panel"><h2>Passenger details</h2><div class="form-grid">
+            <input id="pname" placeholder="Full name"><input id="pemail" type="email" placeholder="Email">
+            <input id="pphone" placeholder="Mobile number"><input id="pdob" type="date">
+          </div></div>
+          <div class="panel"><h2>Select your seat</h2><div class="seat-legend"><span><i class="seat available"></i> Available</span><span><i class="seat selected"></i> Selected</span><span><i class="seat occupied"></i> Occupied</span></div><div id="seat-map" class="seat-map"></div></div>
+          <div class="panel"><h2>Add-ons</h2><div class="addon-grid">
+            <label class="addon"><input type="checkbox" data-price="650" onchange="updateTotal()"> Extra baggage <b>₹650</b></label>
+            <label class="addon"><input type="checkbox" data-price="350" onchange="updateTotal()"> Priority boarding <b>₹350</b></label>
+            <label class="addon"><input type="checkbox" data-price="299" onchange="updateTotal()"> Vegetarian meal <b>₹299</b></label>
+          </div></div>
+          <button class="primary big" onclick="payAndBook()">Pay & Confirm Booking →</button>
+        </div>
+        <aside class="summary panel"><h2>Fare summary</h2><div id="fare-summary"></div><hr><div class="total"><span>Total</span><strong id="total">₹0</strong></div><p class="secure">🔒 Demo payment — no real card details are collected.</p></aside>
+      </div>
+    </section>
+
+    <section id="confirmation" class="page simple-page">
+      <div class="confirmation-card">
+        <div class="success">✓</div><span class="eyebrow blue">BOOKING CONFIRMED</span><h1>Your trip is booked.</h1><p id="confirmation-text"></p>
+        <div class="pnr-box"><small>YOUR PNR</small><strong id="confirmation-pnr"></strong></div>
+        <div id="ticket" class="ticket"></div>
+        <div class="actions"><button class="primary" onclick="window.print()">Print / Save Ticket</button><button class="outline" onclick="showPage('home')">Book another flight</button></div>
+      </div>
+    </section>
+
+    <section id="help" class="page simple-page">
+      <div class="center-card"><span class="eyebrow blue">HELP CENTRE</span><h1>How can we help?</h1>
+        <div class="help-grid"><div><b>Manage booking</b><p>Use your PNR to view or manage a reservation.</p></div><div><b>Check-in</b><p>Online check-in is available before your flight.</p></div><div><b>Flight status</b><p>Search by flight number for the latest demo status.</p></div></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="loginModal" class="modal"><div class="modal-card"><button class="close" onclick="closeModal('loginModal')">×</button><span class="eyebrow blue">MIRAZ ACCOUNT</span><h2>Welcome back</h2><input placeholder="Email or mobile"><input type="password" placeholder="Password"><button class="primary" onclick="loginDemo()">Login</button><p class="muted">Demo login — connect this form to JWT authentication in the backend.</p></div></div>
+
+  <footer><div class="footer-brand"><span class="brand-mark">M</span><b>MIRAZ AIRLINES</b></div><div>© 2026 Miraz Airlines. Demo airline management platform.</div><div>Flights · Manage Booking · Check-in · Status</div></footer>
+  <script src="app.js"></script>
+</body>
+</html>
